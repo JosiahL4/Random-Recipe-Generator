@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Random Recipe Generator</title>
+    <link rel="stylesheet" href="css/style.css">
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            margin: 20px;
+        }
+        .wrapper {
+            display: flex;
+            justify-content: space-between;
+            max-width: 1200px;
+            margin: 0 auto;
+            flex-wrap: wrap; /* Added flex-wrap to handle small screens */
+        }
+        .logo-container {
+            order: -1; /* Move the logo to the top */
+            flex: 1 1 100%; /* Ensure the logo takes up full width */
+            text-align: left;
+            margin-bottom: 20px;
+        }
+        .logo-container img {
+            max-height: 50px;
+            margin-left: 20px; /* Add some margin for separation */
+        }
+        .ads-container {
+            flex-basis: 200px;
+            padding: 20px;
+            background-color: #f1f1f1;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Added margin-bottom for spacing */
+        }
+        .recipe-container {
+            flex-grow: 1;
+            max-width: 600px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px; /* Added margin-bottom for spacing */
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            cursor: pointer;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+        }
+        h3 {
+            color: #333;
+        }
+        img {
+            max-width: 100%;
+            height: auto;
+        }
+        /* Added new styles for the submission box */
+        #submission-box {
+            max-width: 600px;
+            margin: 20px auto;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            background-color: #f9f9f9;
+        }
+        #submission-box label {
+            display: block;
+            margin-bottom: 10px;
+            text-align: left;
+        }
+        #submission-box input {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 15px;
+            box-sizing: border-box;
+        }
+    </style>
+</head>
+<body>
+    <div class="logo-container">
+        <img src="Elegant Circle Signature Photography Logo.png" alt="Logo">
+    </div>
+    <h1>Random Recipe Generator</h1>
+    <section class="wrapper">
+        <div class="ads-container">
+            <!-- Add your ads content here -->
+            <h3>Ads</h3>
+            <p><img src="/ad1.webp" alt="Ad"></p>
+            <p><img src="/download.jpg" alt="Ad"></p>
+        </div>
+        <div class="recipe-container">
+            <h2>Recipe:</h2>
+            <p id="recipe-text"></p>
+            <button onclick="generateRandomRecipe()">Generate Recipe</button>
+        </div>
+        <div class="ads-container">
+            <!-- Add your ads content here -->
+            <h3>Ads</h3>
+            <p><img src="/best-print-ad-examples-surfrider.webp" alt="Ad"></p>
+            <p><img src="/facebook-ad-example-mr-rooter.png" alt="Ad"></p>
+        </div>
+    </section>
+
+    <!-- Submission box -->
+    <div id="submission-box">
+        <h2>Submit Your Recipe</h2>
+        <form>
+            <label for="recipe-name">Recipe Name:</label>
+            <input type="text" id="recipe-name" name="recipe-name" required>
+
+            <label for="recipe-url">Recipe URL:</label>
+            <input type="url" id="recipe-url" name="recipe-url" required>
+
+            <button type="submit">Submit Recipe</button>
+        </form>
+    </div>
+
+    <script>
+        // Hardcoded recipe data for demonstration purposes
+        let recipes = [
+            { name: "Spaghetti Bolognese", url: "https://www.recipetineats.com/spaghetti-bolognese/" },
+            { name: "Chicken Alfredo", url: "https://bellyfull.net/chicken-alfredo-recipe/" },
+            { name: "Stir Fry", url: "https://www.twopeasandtheirpod.com/beef-stir-fry/" },
+            { name: "Margherita Pizza", url: "https://cookieandkate.com/margherita-pizza-recipe/" },
+            { name: "Grilled Salmon", url: "https://www.allrecipes.com/recipe/12720/grilled-salmon-i/" },
+            { name: "Caesar Salad", url: "https://natashaskitchen.com/caesar-salad-recipe/" },
+            { name: "Beef Tacos", url: "https://feelgoodfoodie.net/recipe/ground-beef-tacos-napa-cabbage-guacamole/" },
+            { name: "Shrimp Scampi", url: "https://cooking.nytimes.com/recipes/9101-classic-shrimp-scampi" },
+            { name: "Vegetable Curry", url: "https://www.indianhealthyrecipes.com/mixed-vegetable-curry/" },
+            { name: "Homestyle Burgers", url: "https://www.lanascooking.com/burgers-nana-style/s" },
+            { name: "Chicken Parmesan", url: "https://www.allrecipes.com/recipe/223042/chicken-parmesan/" },
+            { name: "Tomato Basil Soup", url: "https://www.loveandlemons.com/tomato-basil-soup-recipe/" },
+            { name: "Lemon Garlic Roast Chicken", url: "https://cafedelites.com/lemon-garlic-roast-chicken/" },
+            { name: "Pasta Primavera", url: "https://www.loveandlemons.com/pasta-primavera/" },
+            { name: "Chocolate Chip Cookies", url: "https://sallysbakingaddiction.com/chewy-chocolate-chip-cookies/" },
+            { name: "Blueberry Pancakes", url: "https://pinchofyum.com/fluffiest-blueberry-pancakes" },
+            { name: "Caprese Salad", url: "https://www.thepioneerwoman.com/food-cooking/recipes/a10208/caprese-salad/" },
+            { name: "Waffles", url: "https://www.spendwithpennies.com/fluffy-homemade-waffle-recipe/" },
+            { name: "Breakfast Burrito", url: "https://www.onceuponachef.com/recipes/breakfast-burritos.html" },
+            { name: "French Toast", url: "https://www.allrecipes.com/recipe/7016/french-toast-i/" },
+            { name: "Chicken Teriyaki", url: "https://www.japanesecooking101.com/chicken-teriyaki-recipe/" },
+            { name: "Mushroom Risotto", url: "https://www.foodnetwork.com/recipes/mushroom-risotto-recipe-1951260" },
+            { name: "BBQ Pulled Pork", url: "https://www.bbcgoodfood.com/recipes/bbq-pulled-pork" },
+            { name: "Butter Chicken", url: "https://www.allrecipes.com/recipe/228293/chef-johns-butter-chicken/" },
+            { name: "Lentil Soup", url: "https://www.inspiredtaste.net/33685/lentil-soup/" },
+            { name: "Spinach and Feta Stuffed Chicken", url: "https://www.delish.com/cooking/recipe-ideas/a23106088/spinach-and-feta-stuffed-chicken-recipe/" },
+            { name: "Shakshuka", url: "https://www.seriouseats.com/shakshuka-north-african-shirred-eggs-tomato-pepper-recipe-20242825" },
+            { name: "Tiramisu", url: "https://www.epicurious.com/recipes/food/views/tiramisu-51175420" },
+            { name: "Honey Garlic Glazed Salmon", url: "https://www.saltandlavender.com/honey-garlic-glazed-salmon/" },
+            { name: "Pad Thai", url: "https://www.eatingthaifood.com/thai-pad-recipe/" },
+            { name: "Greek Salad", url: "https://www.mediterraneanliving.com/recipe-items/greek-salad/" },
+            { name: "Chicken Quesadillas", url: "https://www.allrecipes.com/recipe/228442/chicken-quesadillas/" },
+            { name: "Beef and Broccoli Stir Fry", url: "https://www.onceuponachef.com/recipes/beef-and-broccoli.html" },
+            { name: "Chocolate Lava Cake", url: "https://www.allrecipes.com/recipe/219965/molten-chocolate-lava-cake/" },
+            { name: "Ratatouille", url: "https://www.foodnetwork.com/recipes/ratatouille-recipe2-1942904" },
+            { name: "Avocado Toast", url: "https://www.tasteofhome.com/recipes/avocado-toast/" },
+            { name: "Pumpkin Soup", url: "https://www.food.com/recipe/simple-pumpkin-soup-33766" },
+            { name: "Crispy Baked Chicken Wings", url: "https://www.foodiecrush.com/baked-chicken-wings/" },
+            { name: "Mango Salsa", url: "https://www.simplyrecipes.com/recipes/mango_salsa/" },
+            { name: "Tomato Mozzarella Basil Bruschetta", url: "https://www.inspiredtaste.net/24102/fresh-tomato-bruschetta-recipe/" },
+            { name: "Cauliflower Pizza Crust", url: "https://www.gimmesomeoven.com/cauliflower-pizza-crust-recipe/" },
+            { name: "Ravioli with Sage Butter Sauce", url: "https://www.foodandwine.com/recipes/ravioli-sage-brown-butter" },
+            { name: "Cilantro Lime Chicken", url: "https://www.delish.com/cooking/recipe-ideas/a19885321/cilantro-lime-chicken-recipe/" },
+            { name: "Banana Bread", url: "https://www.foodnetwork.com/recipes/banana-bread-recipe0-1969570" },
+            { name: "Vegetarian Chili", url: "https://www.acouplecooks.com/best-vegetarian-chili/" },
+            { name: "Shrimp and Grits", url: "https://www.bowlofdelicious.com/easy-classic-shrimp-and-grits/" },
+            { name: "Lemon Bars", url: "https://www.allrecipes.com/recipe/10294/the-best-lemon-bars/" },
+            { name: "Chicken Noodle Soup", url: "https://www.foodnetwork.com/recipes/tyler-florence/chicken-noodle-soup-recipe-1910486" },
+            { name: "Orange Chicken", url: "https://www.modernhoney.com/chinese-orange-chicken/" },
+        ];
+    
+        function generateRandomRecipe() {
+            const recipeText = document.getElementById("recipe-text");
+            const randomIndex = Math.floor(Math.random() * recipes.length);
+            const randomRecipe = recipes[randomIndex];
+            recipeText.innerHTML = `<a href="${randomRecipe.url}" target="_blank">${randomRecipe.name}</a>`;
+        }
+    
+        function submitRecipe() {
+            const recipeNameInput = document.getElementById("recipe-name");
+            const recipeUrlInput = document.getElementById("recipe-url");
+    
+            // Get values from the form
+            const newRecipeName = recipeNameInput.value.trim();
+            const newRecipeUrl = recipeUrlInput.value.trim();
+    
+            // Check if both name and URL are provided
+            if (newRecipeName && newRecipeUrl) {
+                // Create a new recipe object
+                const newRecipe = { name: newRecipeName, url: newRecipeUrl };
+    
+                // Add the new recipe to the array
+                recipes.push(newRecipe);
+    
+                // Optionally, you can clear the form after submission
+                recipeNameInput.value = "";
+                recipeUrlInput.value = "";
+    
+                // Log the updated recipes array (for testing purposes)
+                console.log(recipes);
+            } else {
+                alert("Please provide both the recipe name and URL.");
+            }
+        }
+    </script>    
+</body>
+</html>
